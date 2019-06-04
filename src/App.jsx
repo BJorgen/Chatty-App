@@ -25,17 +25,27 @@ class App extends Component {
   constructor() {
     super();
     this.state = data;
+    this.addMessage = this.addMessage.bind(this);
+  }
+
+  addMessage(username, content) {
+    // console.log('calling add message with username: ', username, ' content: ', content);
+    // console.log('current state:', this.state);
+    let currentMessages = this.state.messages
+    const newMessage = {
+      id: currentMessages.length+1,
+      username,
+      content
+    }
+    currentMessages.push(newMessage);
+    this.setState({ messages: currentMessages });
   }
 
   componentDidMount() {
     console.log('componentDidMount <App />');
     setTimeout(() => {
       console.log('Simulating incoming message');
-      
-      const newMessage = {id: 3, username: 'Michelle', content: 'Hello there!'};
-      const messages = this.state.messages.concat(newMessage)
-
-      this.setState({messages: messages})
+      this.addMessage('Michelle', 'Hello there!');
     }, 3000);
   }
 
@@ -44,7 +54,7 @@ class App extends Component {
       <div>
         <NavBar currentUser={this.state.currentUser}/>
         <MessageList messages={this.state.messages}/>
-        <ChatBar currentUser={this.state.currentUser}/>
+        <ChatBar addMessage={this.addMessage} currentUser={this.state.currentUser}/>
       </div>
     );
   }
