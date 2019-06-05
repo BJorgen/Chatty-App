@@ -3,24 +3,6 @@ import NavBar from './NavBar.jsx';
 import MessageList from './MessageList.jsx';
 import ChatBar from './ChatBar.jsx';
 
-
-const data = {
-  currentUser: {name: 'Bob'},
-  messages: [
-    {
-      id: 1,
-      username: 'Bob',
-      content: 'Has anyone seen my marbles?',
-    },
-    {
-      id:2,
-      username: 'Anonymous',
-      content: 'No, I think you lost them. You lost your marbles Bob. You lost them for good.'
-    }
-  ]
-}
-
-
 class App extends Component {
 
   constructor(props) {
@@ -32,23 +14,22 @@ class App extends Component {
   }
 
   addMessage = (username, content) => {
-    let currentMessages = this.state.messages
-    const newMessage = {
-      id: currentMessages.length+1,
+    // Preparing message and sending to the server
+    const newMessageToServer = {
       username,
       content
     }
-    currentMessages.push(newMessage);
-    this.setState({ messages: currentMessages });
-    this.socket.send(JSON.stringify(newMessage))
+    this.socket.send(JSON.stringify(newMessageToServer));
   }
+
+
 
   componentDidMount(){
     this.socket = new WebSocket('ws://localhost:3001');
-    
-    this.socket.onmessage = event => { 
+    // Update the state with incoming messages from the server
+    this.socket.onmessage = event => {
     	this.setState({
-      	messages : this.state.messages.concat([ event.data ])
+      	messages : this.state.messages.concat([ JSON.parse(event.data) ])
       })
     };
   }
