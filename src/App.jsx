@@ -3,6 +3,7 @@ import NavBar from './NavBar.jsx';
 import MessageList from './MessageList.jsx';
 import ChatBar from './ChatBar.jsx';
 
+
 const data = {
   currentUser: {name: 'Bob'},
   messages: [
@@ -22,15 +23,15 @@ const data = {
 
 class App extends Component {
 
-  constructor() {
-    super();
-    this.state = data;
-    this.addMessage = this.addMessage.bind(this);
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentUser: {name: "Bob"},
+      messages: []
+    };
   }
 
-  addMessage(username, content) {
-    // console.log('calling add message with username: ', username, ' content: ', content);
-    // console.log('current state:', this.state);
+  addMessage = (username, content) => {
     let currentMessages = this.state.messages
     const newMessage = {
       id: currentMessages.length+1,
@@ -39,14 +40,17 @@ class App extends Component {
     }
     currentMessages.push(newMessage);
     this.setState({ messages: currentMessages });
+    this.socket.send(JSON.stringify(newMessage))
   }
 
-  componentDidMount() {
-    console.log('componentDidMount <App />');
-    setTimeout(() => {
-      console.log('Simulating incoming message');
-      this.addMessage('Michelle', 'Hello there!');
-    }, 3000);
+  componentDidMount(){
+    this.socket = new WebSocket('ws://localhost:3001');
+    
+    this.socket.onmessage = event => { 
+    	this.setState({
+      	messages : this.state.messages.concat([ event.data ])
+      })
+    };
   }
 
   render() {
