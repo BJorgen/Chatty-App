@@ -9,7 +9,8 @@ class App extends Component {
     super(props);
     this.state = {
       currentUser: {name: "Bob"},
-      messages: []
+      messages: [],
+      numberOfUsers: 1
     };
   }
 
@@ -18,6 +19,7 @@ class App extends Component {
       const content = event.target;
       // Preparing message and sending to the server
       const newMessageToServer = {
+        type: "postMessage",
         username: this.state.currentUser.name,
         content: content.value
       }
@@ -26,28 +28,69 @@ class App extends Component {
     }
   }
 
+
   updateUserName = (event) => {
     if (event.charCode == 13) {
-      this.setState({currentUser: {name: event.target.value}}, () => {
+      const oldUsername = this.state.currentUser.name;
+      const newUsername = event.target.value;
+      this.setState({currentUser: {name: newUsername}}, () => {
         console.log(`current user: ${this.state.currentUser.name}`)
+        // Preparing message and sending to the server
+        const newNotificationToServer = {
+          type: "postNotification",
+          username: newUsername,
+          content: `${oldUsername} changed their name to ${newUsername}.`
+        }
+        this.socket.send(JSON.stringify(newNotificationToServer))
       });
     } 
   }
 
+  
+
   componentDidMount(){
     this.socket = new WebSocket('ws://localhost:3001');
-    // Update the state with incoming messages from the server
-    this.socket.onmessage = event => {
-    	this.setState({
-      	messages : this.state.messages.concat([ JSON.parse(event.data) ])
-      })
+
+    this.socket.onopen = (event) => {
+      console.log("Connected to server");
     };
+
+    this.socket.onmessage = event => {
+      // console.log(event);
+      const data = JSON.parse(event.data);
+      console.log(data)
+      // Update the state with incoming messages from the server
+      switch(data.type) {
+        case "incomingMessage":
+        case "postMessage":
+          this.setState({
+            messages : this.state.messages.concat([data])
+          })
+          break;
+        case "incomingNotification":
+        case "postNotification":
+          this.setState({
+            messages : this.state.messages.concat([data])
+          })
+          break;
+        case "updateUsers":
+          this.setState({
+            numberOfUsers : data.content
+          })
+          break;
+        default:
+          // show an error in the console if the message type is unknown
+          throw new Error("Unknown event type " + data.type);
+
+      }
+    };
+
   }
 
   render() {
     return (
       <div>
-        <NavBar currentUser={this.state.currentUser}/>
+        <NavBar currentUser={this.state.currentUser} numberOfUsers={this.state.numberOfUsers}/>
         <MessageList messages={this.state.messages}/>
         <ChatBar addMessage={this.addMessage} currentUser={this.state.currentUser} updateUserName={this.updateUserName}/>
       </div>

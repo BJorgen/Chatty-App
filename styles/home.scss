@@ -39,6 +39,16 @@ body {
   flex: 2;
 }
 
+.notification {
+  display: flex;
+  padding: 5px;
+}
+.notification-content{
+  overflow: hidden;
+  flex: 2;
+  font-style: italic;
+}
+
 .message {
   display: flex;
   padding: 5px;

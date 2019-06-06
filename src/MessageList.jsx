@@ -8,6 +8,7 @@ function MessageList(props){
   const messageList = messages.map((message) =>
     <Message
       key={message.id}
+      type={message.type}
       username={message.username}
       content={message.content}
     />
