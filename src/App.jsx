@@ -13,16 +13,26 @@ class App extends Component {
     };
   }
 
-  addMessage = (username, content) => {
-    // Preparing message and sending to the server
-    const newMessageToServer = {
-      username,
-      content
+  addMessage = (event) => {
+    if (event.charCode == 13) {
+      const content = event.target;
+      // Preparing message and sending to the server
+      const newMessageToServer = {
+        username: this.state.currentUser.name,
+        content: content.value
+      }
+      this.socket.send(JSON.stringify(newMessageToServer));
+      content.value = "";
     }
-    this.socket.send(JSON.stringify(newMessageToServer));
   }
 
-
+  updateUserName = (event) => {
+    if (event.charCode == 13) {
+      this.setState({currentUser: {name: event.target.value}}, () => {
+        console.log(`current user: ${this.state.currentUser.name}`)
+      });
+    } 
+  }
 
   componentDidMount(){
     this.socket = new WebSocket('ws://localhost:3001');
@@ -39,7 +49,7 @@ class App extends Component {
       <div>
         <NavBar currentUser={this.state.currentUser}/>
         <MessageList messages={this.state.messages}/>
-        <ChatBar addMessage={this.addMessage} currentUser={this.state.currentUser}/>
+        <ChatBar addMessage={this.addMessage} currentUser={this.state.currentUser} updateUserName={this.updateUserName}/>
       </div>
     );
   }
