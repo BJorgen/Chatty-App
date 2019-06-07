@@ -14,10 +14,12 @@ class App extends Component {
     };
   }
 
+  // Send message to server.
+
   addMessage = (event) => {
     if (event.charCode == 13) {
       const content = event.target;
-      // Preparing message and sending to the server
+      // Preparing message and sending to the server.
       const newMessageToServer = {
         type: "postMessage",
         username: this.state.currentUser.name,
@@ -28,6 +30,7 @@ class App extends Component {
     }
   }
 
+  // Update client username and send message to server with update.
 
   updateUserName = (event) => {
     if (event.charCode == 13) {
@@ -35,7 +38,7 @@ class App extends Component {
       const newUsername = event.target.value;
       this.setState({currentUser: {name: newUsername}}, () => {
         console.log(`current user: ${this.state.currentUser.name}`)
-        // Preparing message and sending to the server
+        // Preparing message and sending to the server.
         const newNotificationToServer = {
           type: "postNotification",
           username: newUsername,
