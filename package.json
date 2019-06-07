@@ -1,5 +1,5 @@
 {
-  "name": "react-simple-boilerplate",
+  "name": "chatty-app",
   "version": "1.0.0",
   "description": "Chatty App -  Project to Learn React. Build on top of react-simple-boilerplate by Noah-Jerome Lotzer <n.lotzer@neusta.de>",
   "scripts": {
