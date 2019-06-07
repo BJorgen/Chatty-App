@@ -25,7 +25,7 @@ function updateUsers(clients) {
   });
 }
 // Array of colors to assign to clients
-function getRandomColor(){
+function getRandomColour(){
   const colours = ['#E27D60' , '#659DBD' , '#C38D9E', '#41B3A3'];
   const colour = colours[Math.floor(Math.random()*colours.length)];
   return colour;
@@ -36,24 +36,43 @@ wss.on('connection', (ws) => {
   console.log('Client connected');
   numberOfConnections++;
   updateUsers(wss.clients);
-  const userColour = getRandomColor();
+  const userColour = getRandomColour();
 
 
   ws.on('message', function incoming(message) {
-    const incoming= JSON.parse(message);
-    incoming.id = uuidv1();
-    incoming.colour = userColour;
-    
-    wss.clients.forEach(function each(client) {
-      if (client !== ws && incoming.type === "postMessage"){
-        incoming.type = "incomingMessage";
+    let incoming;
+    try {
+      incoming= JSON.parse(message);
+     } catch (error) { 
+       console.log(error); 
+       return;
       }
-      if (client !== ws && incoming.type === "postNotification"){
-        incoming.type = "incomingNotification";
+      
+      let response = {
+        content: incoming.content,
+        username: incoming.username,
+        type: incoming.type,
+        id: uuidv1(),
+        colour: userColour
+      }
+
+    wss.clients.forEach(function each(client) {
+      
+      if (client !== ws) {
+        switch(response.type) {
+          case 'postMessage':
+            response.type = 'incomingMessage';
+            break;
+          case 'postNotification':
+            response.type = 'incomingNotification';
+            break;
+          default:
+            throw new Error('Unknown event type ' + data.type);
+        }
       }
       if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify(incoming));
-     }
+        client.send(JSON.stringify(response));
+      }
     });
   });
 
