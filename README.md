@@ -24,7 +24,7 @@ npm start
 
 ## Screen Shot
 
-
+!["Screenshot of Chatty App](docs/chatty-screenshot.png)
 
 ## Dependencies
 ---------------
