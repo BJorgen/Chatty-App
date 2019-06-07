@@ -4,7 +4,7 @@ Chatty App
 A chat app built in ReactJS and using websocket server for the back end.
 
 ## Setup
-1. Install the dependencies and start the react server in from the main project folder.
+1. Install the dependencies and start the react server from the main project folder.
 
 ```
 npm install
