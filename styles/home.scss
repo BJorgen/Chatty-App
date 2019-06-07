@@ -46,6 +46,8 @@ body {
 .notification-content{
   overflow: hidden;
   flex: 2;
+  margin: 5px;
+  padding: 0 10px;
   font-style: italic;
 }
 
@@ -96,4 +98,13 @@ body {
   line-height: 60px;
   padding: 0 10px;
   text-decoration: none;
+}
+
+.navbar-user-count {
+  color: inherit;
+  display: block;
+  float: right;
+  margin: auto;
+  line-height: 60px;
+  padding: 0 10px;
 }

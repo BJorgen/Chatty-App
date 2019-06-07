@@ -10,7 +10,7 @@ class App extends Component {
     this.state = {
       currentUser: {name: "Bob"},
       messages: [],
-      numberOfUsers: 1
+      numberOfUsers: 0
     };
   }
 
@@ -46,8 +46,6 @@ class App extends Component {
     } 
   }
 
-  
-
   componentDidMount(){
     this.socket = new WebSocket('ws://localhost:3001');
 
@@ -63,10 +61,6 @@ class App extends Component {
       switch(data.type) {
         case "incomingMessage":
         case "postMessage":
-          this.setState({
-            messages : this.state.messages.concat([data])
-          })
-          break;
         case "incomingNotification":
         case "postNotification":
           this.setState({
@@ -97,4 +91,5 @@ class App extends Component {
     );
   }
 }
+
 export default App;
