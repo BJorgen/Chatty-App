@@ -27,7 +27,6 @@ npm start
 !["Screenshot of Chatty App](docs/chatty-screenshot.png)
 
 ## Dependencies
----------------
 
 ### Chatty App Client
   babel-core: 6.23.1    
